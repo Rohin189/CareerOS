@@ -1,111 +1,125 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
+﻿* { box-sizing: border-box; }
 
 body {
   margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: #f4f6f9;
+  color: #1f2937;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+.status { text-align: center; margin-top: 3rem; }
+
+.auth-card {
+  max-width: 380px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+.auth-card h1 { margin: 0; font-size: 1.4rem; color: #2563eb; }
+.auth-card h2 { margin: 0.25rem 0 1.25rem; font-size: 1.1rem; font-weight: 500; }
+.auth-card label { display: block; margin: 0.75rem 0 0.25rem; font-size: 0.85rem; }
+.auth-card input {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+.auth-card button {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.65rem;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.auth-card button:disabled { opacity: 0.6; cursor: default; }
+
+.error { color: #b91c1c; font-size: 0.85rem; margin: 0.75rem 0 0; }
+
+.page { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+.topbar { display: flex; justify-content: space-between; align-items: center; }
+.topbar h1 { margin: 0; font-size: 1.4rem; color: #2563eb; }
+.topbar button {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+/* ---- Dashboard ---- */
+.subtitle { margin: 0.15rem 0 0; font-size: 0.85rem; color: #6b7280; }
+.banner { background: #fee2e2; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 1rem; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
+.card h2 { margin: 0 0 0.75rem; font-size: 1.05rem; }
+.hint { font-size: 0.8rem; color: #6b7280; margin: 0.25rem 0 1rem; }
+.stat-line { font-size: 0.85rem; color: #374151; margin: 0; }
+.empty { font-size: 0.85rem; color: #6b7280; margin-top: 0.75rem; }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
+.score { font-size: 3rem; font-weight: 700; color: #2563eb; line-height: 1; }
+.score span { font-size: 1rem; color: #6b7280; font-weight: 400; margin-left: 0.35rem; }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.bar-row {
+  display: grid;
+  grid-template-columns: 150px 1fr 44px;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
 }
+.bar { height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: #2563eb; }
+.bar-value { text-align: right; color: #6b7280; }
+
+.field { display: block; margin: 0.6rem 0 0.25rem; font-size: 0.85rem; }
+.card input, .card select {
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #ffffff;
+}
+.card input[type='text'] { width: 100%; }
+.form-actions { margin-top: 0.9rem; }
+
+.inline-form { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.inline-form input[type='text'] { flex: 1; min-width: 140px; width: auto; }
+
+.btn {
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.btn:disabled { opacity: 0.6; cursor: default; }
+.btn-link { background: none; border: none; color: #b91c1c; cursor: pointer; font-size: 0.85rem; }
+
+.item-list { list-style: none; margin: 0.75rem 0 0; padding: 0; }
+.item { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0; border-top: 1px solid #f0f1f3; }
+.item-main { flex: 1; min-width: 0; }
+.item-title { font-weight: 500; }
+.item-meta { font-size: 0.78rem; color: #6b7280; }
+.tag { font-size: 0.72rem; padding: 0.1rem 0.45rem; border-radius: 999px; background: #e0e7ff; color: #3730a3; }
+.tag-warn { background: #fee2e2; color: #991b1b; }

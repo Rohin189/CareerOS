@@ -1,30 +1,23 @@
-﻿import { useState, useEffect } from 'react'
-import './App.css'
+﻿import { Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
-function App() {
-  const [health, setHealth] = useState(null)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/health')
-      .then((res) => res.json())
-      .then((data) => setHealth(data))
-      .catch((err) => setError(err.message))
-  }, [])
-
+export default function App() {
   return (
-    <div style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
-      <h1>CareerOS</h1>
-      <h2>API Connection Test</h2>
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      {health && (
-        <pre style={{ background: '#eee', padding: '1rem' }}>
-          {JSON.stringify(health, null, 2)}
-        </pre>
-      )}
-      {!health && !error && <p>Connecting to API...</p>}
-    </div>
-  )
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
 }
-
-export default App
