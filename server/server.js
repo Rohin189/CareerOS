@@ -4,6 +4,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const careerRoutes = require('./routes/careerRoutes');
+const githubRoutes = require('./routes/githubRoutes');
 
 connectDB();
 
@@ -19,6 +20,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/career', careerRoutes);
+app.use('/api/github', githubRoutes);
 
 app.listen(PORT, () => {
   console.log('Server running on http://localhost:' + PORT);
