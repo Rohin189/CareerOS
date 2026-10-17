@@ -55,7 +55,7 @@ body {
 
 /* ---- Dashboard ---- */
 .subtitle { margin: 0.15rem 0 0; font-size: 0.85rem; color: #6b7280; }
-.banner { background: #fee2e2; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 1rem; }
+.banner { background: #fee2e2; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 1rem; position: sticky; top: 0.5rem; z-index: 10; }
 
 .grid {
   display: grid;

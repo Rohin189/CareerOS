@@ -33,7 +33,11 @@ const updateCareerProfile = async (req, res) => {
     );
     res.status(200).json(profile);
   } catch (err) {
-    res.status(400).json({ message: 'Failed to update career profile', error: err.message });
+    // Surface schema validator messages (e.g. 'Invalid GitHub username') so the client can show them
+    const message = err.name === 'ValidationError'
+      ? Object.values(err.errors).map(function (e) { return e.message; }).join('; ')
+      : 'Failed to update career profile';
+    res.status(400).json({ message: message, error: err.message });
   }
 };
 
