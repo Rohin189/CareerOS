@@ -1,6 +1,6 @@
 ﻿const CareerProfile = require('../models/CareerProfile');
 
-const ALLOWED_FIELDS = ['targetRole', 'targetCompanies', 'skills', 'milestones'];
+const ALLOWED_FIELDS = ['targetRole', 'targetCompanies', 'githubUsername', 'skills', 'milestones'];
 
 // GET /api/career - return the profile, creating an empty one on first access
 const getCareerProfile = async (req, res) => {

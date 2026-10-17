@@ -30,6 +30,13 @@ const careerProfileSchema = new mongoose.Schema(
     },
     targetRole: { type: String, trim: true, default: '' },
     targetCompanies: [{ type: String, trim: true }],
+    // Empty string means not set; otherwise must follow GitHub's username rules
+    githubUsername: {
+      type: String,
+      trim: true,
+      default: '',
+      match: [/^$|^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i, 'Invalid GitHub username']
+    },
     skills: [skillSchema],
     milestones: [milestoneSchema]
   },
