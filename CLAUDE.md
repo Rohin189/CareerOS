@@ -9,8 +9,8 @@ Career intelligence platform for software engineers. Users declare a target role
 ## Current status
 - Phases 0-2 complete and tagged: v0.0-phase0, v1.0-phase1a, v1-phase1, v1.1-phase1c, v2-phase2.
 - Phase 3 (GitHub integration) in progress. Decided: username-based fetching of public data with one server-held token (no OAuth); OAuth "Connect GitHub" can be added later for ownership proof or private repos.
-  - Done: Step 1 githubUsername + GitHubSnapshot model; Step 2 githubService + /api/github routes; Step 3 dashboard GitHubPanel.
-  - Next: Step 4, server-side evidence: compare snapshot languages with declared skills (skills with GitHub evidence, languages used but not declared).
+  - Done: Step 1 githubUsername + GitHubSnapshot model; Step 2 githubService + /api/github routes; Step 3 dashboard GitHubPanel; Step 4 evidenceService (skills vs snapshot languages) exposed as `githubEvidence` in /career/dashboard.
+  - Next: Step 5, show githubEvidence in the dashboard UI.
 - Roadmap: 3 GitHub integration; 4 job intelligence (market demand vs profile gap); 5 AI layer (resume parsing, learning roadmaps); 6 interview simulator.
 - Update this section whenever a phase closes.
 
@@ -33,7 +33,7 @@ Career intelligence platform for software engineers. Users declare a target role
 - server/models/: User.js, CareerProfile.js, GitHubSnapshot.js
 - server/middleware/authMiddleware.js: `protect`, sets req.user (password excluded)
 - server/routes/ and server/controllers/: thin HTTP layer
-- server/services/: dashboardService.js (pure, exports computeDashboard); githubService.js (all GitHub API access via built-in fetch, exports fetchGitHubData and refreshSnapshot)
+- server/services/: dashboardService.js (pure, exports computeDashboard); evidenceService.js (pure, exports computeGitHubEvidence; skill names matched via normalisation + ALIASES map); githubService.js (all GitHub API access via built-in fetch, exports fetchGitHubData and refreshSnapshot)
 - client/src/api/client.js: the only axios instance; baseURL `/api`, attaches Bearer token from localStorage key `token`
 - client/src/context/AuthContext.jsx: session state (user, loading, login, register, logout)
 - client/src/components/: ProtectedRoute and the dashboard panels
@@ -42,7 +42,7 @@ Career intelligence platform for software engineers. Users declare a target role
 ## API (all under /api)
 - POST /auth/register, POST /auth/login (returns token), GET /auth/me (protected)
 - GET /career, PUT /career (protected): CareerProfile for req.user, created on first access via upsert
-- GET /career/dashboard (protected): computed summary (skills, milestones, readiness with breakdown)
+- GET /career/dashboard (protected): computed summary (skills, milestones, readiness with breakdown) plus `githubEvidence`: status no-username | not-fetched | stale | ready; when ready, skills[] each evidenced (language, share %, repoCount) | no-evidence (category language, no match) | not-measurable (other categories), and undeclaredLanguages[] (share >= 1%). Evidence never feeds the readiness score.
 - GET /github (protected): cached snapshot plus `stale` flag; never calls GitHub. Returns { username, stale, snapshot }.
 - POST /github/refresh (protected): fetches for the profile's githubUsername (not the request body) and replaces the snapshot. 400 if no username, 404 unknown user, 429 rate limited, 502 other GitHub failures.
 - GET /health: unauthenticated liveness check.
