@@ -9,10 +9,11 @@ Career intelligence platform for software engineers. Users declare a target role
 ## Current status
 - Phases 0-3 complete and tagged: v0.0-phase0, v1.0-phase1a, v1-phase1, v1.1-phase1c, v2-phase2, v3-phase3.
 - Phase 3 (GitHub integration) summary: username-based fetching of public data with one server-held token (no OAuth); cached GitHubSnapshot; GitHubPanel; skills-vs-languages evidence (evidenceService, EvidencePanel).
-  - Deferred ideas: refresh cooldown, commit-activity evidence, OAuth "Connect GitHub" for ownership proof or private repos, fixing the two pre-existing ESLint errors in Dashboard.jsx.
+  - Deferred ideas: refresh cooldown, commit-activity evidence, OAuth "Connect GitHub" for ownership proof or private repos, fixing the four pre-existing ESLint errors (two in Dashboard.jsx, two in AuthContext.jsx).
 - Phase 4 (job intelligence) in progress. Decided: user pastes job descriptions; skills are extracted with a curated dictionary (no external job APIs; a live source could be added later as another way to create postings).
   - Done: Step 1 JobPosting model + skillDictionary + skillExtractor; Step 2 /api/jobs routes (list, create, delete); Step 3 gap analysis (gapService, `jobGap` in the dashboard summary).
-  - Next: Step 4, client UI: jobs panel (add, list, delete postings) and gap view.
+  - Done: Step 4 client UI (JobsPanel to add, list and remove postings; JobGapPanel showing missing, weak and covered skills).
+  - Next: decide whether to close Phase 4 (tag v4-phase4).
 - Roadmap: 3 GitHub integration; 4 job intelligence (market demand vs profile gap); 5 AI layer (resume parsing, learning roadmaps); 6 interview simulator.
 - Update this section whenever a phase closes.
 
@@ -62,7 +63,7 @@ Career intelligence platform for software engineers. Users declare a target role
 - PUT /career whitelists fields (targetRole, targetCompanies, githubUsername, skills, milestones) and replaces each array it receives in full, so clients must send complete arrays. It runs schema validators; validation failures return 400 with the validator messages as `message`.
 - GitHub requests are made sequentially (GitHub penalises concurrent bursts). A refresh costs about 2 + number of sampled repos requests against the token's 5000/hour limit.
 - Readiness score (20% completeness, 40% skill strength, 40% milestone progress) is computed server-side only; the client never recomputes it. It measures progress against the user's own plan, not hiring probability.
-- Client: ES modules with .jsx. All HTTP goes through src/api/client.js. Dashboard.jsx owns profile, summary and github state; panels are presentational and call `onSave(patch)`, the single profile write path (PUT, then refetch summary, plus /github when the patch includes githubUsername). GitHubPanel's refresh is a separate action, `onRefresh` (POST /github/refresh). Errors show in the sticky banner at the top of the page.
+- Client: ES modules with .jsx. All HTTP goes through src/api/client.js. Dashboard.jsx owns profile, summary, github and jobs state; panels are presentational and call `onSave(patch)`, the single profile write path (PUT, then refetch summary, plus /github when the patch includes githubUsername). GitHubPanel's refresh is a separate action, `onRefresh` (POST /github/refresh). JobsPanel calls `onAdd(posting)` (POST /jobs, returns true or false so the form clears only on success) and `onRemove(id)` (DELETE); both refetch the summary because jobGap lives there. Errors show in the sticky banner at the top of the page.
 
 ## How to work with me
 - Build in small, verifiable steps. Stop after each step so I can test and report before continuing.

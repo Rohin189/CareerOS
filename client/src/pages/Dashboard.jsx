@@ -7,12 +7,15 @@ import SkillsPanel from '../components/SkillsPanel';
 import MilestonesPanel from '../components/MilestonesPanel';
 import GitHubPanel from '../components/GitHubPanel';
 import EvidencePanel from '../components/EvidencePanel';
+import JobsPanel from '../components/JobsPanel';
+import JobGapPanel from '../components/JobGapPanel';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const [profile, setProfile] = useState(null);
   const [summary, setSummary] = useState(null);
   const [github, setGithub] = useState(null);
+  const [jobs, setJobs] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -21,11 +24,13 @@ export default function Dashboard() {
       const results = await Promise.all([
         api.get('/career'),
         api.get('/career/dashboard'),
-        api.get('/github')
+        api.get('/github'),
+        api.get('/jobs')
       ]);
       setProfile(results[0].data);
       setSummary(results[1].data);
       setGithub(results[2].data);
+      setJobs(results[3].data);
       setError('');
     } catch (err) {
       setError('Unable to load your dashboard.');
@@ -72,11 +77,41 @@ export default function Dashboard() {
     }
   }
 
+  // Returns whether the posting was saved, so the panel only clears its form on success
+  async function addJob(posting) {
+    try {
+      const res = await api.post('/jobs', posting);
+      setJobs(function (prev) { return [res.data].concat(prev); });
+      // The job gap lives in the summary, so it must be refetched after postings change
+      const dash = await api.get('/career/dashboard');
+      setSummary(dash.data);
+      setError('');
+      return true;
+    } catch (err) {
+      const message = err.response && err.response.data && err.response.data.message;
+      setError(message || 'Unable to add the job posting.');
+      return false;
+    }
+  }
+
+  async function removeJob(id) {
+    try {
+      await api.delete('/jobs/' + id);
+      setJobs(function (prev) { return prev.filter(function (j) { return j._id !== id; }); });
+      const dash = await api.get('/career/dashboard');
+      setSummary(dash.data);
+      setError('');
+    } catch (err) {
+      const message = err.response && err.response.data && err.response.data.message;
+      setError(message || 'Unable to remove the job posting.');
+    }
+  }
+
   if (loading) {
     return <p className="status">Loading dashboard...</p>;
   }
 
-  if (!profile || !summary || !github) {
+  if (!profile || !summary || !github || !jobs) {
     return (
       <div className="page">
         <p className="error">{error}</p>
@@ -104,6 +139,8 @@ export default function Dashboard() {
         <MilestonesPanel milestones={profile.milestones} summary={summary.milestones} onSave={save} />
         <GitHubPanel github={github} onSave={save} onRefresh={refreshGitHub} />
         <EvidencePanel evidence={summary.githubEvidence} />
+        <JobsPanel jobs={jobs} onAdd={addJob} onRemove={removeJob} />
+        <JobGapPanel gap={summary.jobGap} />
       </div>
     </div>
   );
