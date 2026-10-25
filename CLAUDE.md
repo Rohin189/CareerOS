@@ -9,8 +9,8 @@ Career intelligence platform for software engineers. Users declare a target role
 ## Current status
 - Phases 0-2 complete and tagged: v0.0-phase0, v1.0-phase1a, v1-phase1, v1.1-phase1c, v2-phase2.
 - Phase 3 (GitHub integration) in progress. Decided: username-based fetching of public data with one server-held token (no OAuth); OAuth "Connect GitHub" can be added later for ownership proof or private repos.
-  - Done: Step 1 githubUsername + GitHubSnapshot model; Step 2 githubService + /api/github routes; Step 3 dashboard GitHubPanel; Step 4 evidenceService (skills vs snapshot languages) exposed as `githubEvidence` in /career/dashboard.
-  - Next: Step 5, show githubEvidence in the dashboard UI.
+  - Done: Step 1 githubUsername + GitHubSnapshot model; Step 2 githubService + /api/github routes; Step 3 dashboard GitHubPanel; Step 4 evidenceService (skills vs snapshot languages) exposed as `githubEvidence` in /career/dashboard; Step 5 EvidencePanel on the dashboard.
+  - Next: decide whether Phase 3 is complete (tag v3-phase3) or needs more steps.
 - Roadmap: 3 GitHub integration; 4 job intelligence (market demand vs profile gap); 5 AI layer (resume parsing, learning roadmaps); 6 interview simulator.
 - Update this section whenever a phase closes.
 

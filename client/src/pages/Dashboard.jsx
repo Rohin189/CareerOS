@@ -6,6 +6,7 @@ import TargetsPanel from '../components/TargetsPanel';
 import SkillsPanel from '../components/SkillsPanel';
 import MilestonesPanel from '../components/MilestonesPanel';
 import GitHubPanel from '../components/GitHubPanel';
+import EvidencePanel from '../components/EvidencePanel';
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
@@ -61,6 +62,9 @@ export default function Dashboard() {
     try {
       const res = await api.post('/github/refresh');
       setGithub(res.data);
+      // Evidence lives in the summary, so it must be refetched after new GitHub data
+      const dash = await api.get('/career/dashboard');
+      setSummary(dash.data);
       setError('');
     } catch (err) {
       const message = err.response && err.response.data && err.response.data.message;
@@ -99,6 +103,7 @@ export default function Dashboard() {
         <SkillsPanel skills={profile.skills} summary={summary.skills} onSave={save} />
         <MilestonesPanel milestones={profile.milestones} summary={summary.milestones} onSave={save} />
         <GitHubPanel github={github} onSave={save} onRefresh={refreshGitHub} />
+        <EvidencePanel evidence={summary.githubEvidence} />
       </div>
     </div>
   );
