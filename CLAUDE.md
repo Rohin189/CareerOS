@@ -7,13 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Career intelligence platform for software engineers. Users declare a target role, skills and milestones; later phases add GitHub evidence, job-market demand and AI-generated guidance. MERN stack, JavaScript only (no TypeScript).
 
 ## Current status
-- Phases 0-3 complete and tagged: v0.0-phase0, v1.0-phase1a, v1-phase1, v1.1-phase1c, v2-phase2, v3-phase3.
+- Phases 0-4 complete and tagged: v0.0-phase0, v1.0-phase1a, v1-phase1, v1.1-phase1c, v2-phase2, v3-phase3, v4-phase4.
 - Phase 3 (GitHub integration) summary: username-based fetching of public data with one server-held token (no OAuth); cached GitHubSnapshot; GitHubPanel; skills-vs-languages evidence (evidenceService, EvidencePanel).
   - Deferred ideas: refresh cooldown, commit-activity evidence, OAuth "Connect GitHub" for ownership proof or private repos, fixing the four pre-existing ESLint errors (two in Dashboard.jsx, two in AuthContext.jsx).
-- Phase 4 (job intelligence) in progress. Decided: user pastes job descriptions; skills are extracted with a curated dictionary (no external job APIs; a live source could be added later as another way to create postings).
-  - Done: Step 1 JobPosting model + skillDictionary + skillExtractor; Step 2 /api/jobs routes (list, create, delete); Step 3 gap analysis (gapService, `jobGap` in the dashboard summary).
-  - Done: Step 4 client UI (JobsPanel to add, list and remove postings; JobGapPanel showing missing, weak and covered skills).
-  - Next: decide whether to close Phase 4 (tag v4-phase4).
+- Phase 4 (job intelligence) summary: user pastes job descriptions (JobPosting, /api/jobs); skills extracted on read with a curated dictionary (skillDictionary, skillExtractor); gap analysis of demand vs declared levels and GitHub evidence (gapService, `jobGap` in the dashboard summary); JobsPanel and JobGapPanel. Postings never affect the readiness score.
+  - Deferred ideas: more dictionary entries (e.g. Figma, Jupyter), a live job source as another way to create postings, a "declare this skill" shortcut from the gap list.
+- Next: Phase 5 (AI layer), starting with a design discussion.
 - Roadmap: 3 GitHub integration; 4 job intelligence (market demand vs profile gap); 5 AI layer (resume parsing, learning roadmaps); 6 interview simulator.
 - Update this section whenever a phase closes.
 
