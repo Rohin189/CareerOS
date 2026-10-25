@@ -11,8 +11,8 @@ Career intelligence platform for software engineers. Users declare a target role
 - Phase 3 (GitHub integration) summary: username-based fetching of public data with one server-held token (no OAuth); cached GitHubSnapshot; GitHubPanel; skills-vs-languages evidence (evidenceService, EvidencePanel).
   - Deferred ideas: refresh cooldown, commit-activity evidence, OAuth "Connect GitHub" for ownership proof or private repos, fixing the two pre-existing ESLint errors in Dashboard.jsx.
 - Phase 4 (job intelligence) in progress. Decided: user pastes job descriptions; skills are extracted with a curated dictionary (no external job APIs; a live source could be added later as another way to create postings).
-  - Done: Step 1 JobPosting model + skillDictionary + skillExtractor; Step 2 /api/jobs routes (list, create, delete).
-  - Next: Step 3, gap analysis: skill demand across postings vs declared levels and GitHub evidence (missing, weak, covered).
+  - Done: Step 1 JobPosting model + skillDictionary + skillExtractor; Step 2 /api/jobs routes (list, create, delete); Step 3 gap analysis (gapService, `jobGap` in the dashboard summary).
+  - Next: Step 4, client UI: jobs panel (add, list, delete postings) and gap view.
 - Roadmap: 3 GitHub integration; 4 job intelligence (market demand vs profile gap); 5 AI layer (resume parsing, learning roadmaps); 6 interview simulator.
 - Update this section whenever a phase closes.
 
@@ -35,7 +35,7 @@ Career intelligence platform for software engineers. Users declare a target role
 - server/models/: User.js, CareerProfile.js, GitHubSnapshot.js, JobPosting.js
 - server/middleware/authMiddleware.js: `protect`, sets req.user (password excluded)
 - server/routes/ and server/controllers/: thin HTTP layer
-- server/services/: dashboardService.js (pure, exports computeDashboard); evidenceService.js (pure, exports computeGitHubEvidence; skill names matched via normalisation + ALIASES map); githubService.js (all GitHub API access via built-in fetch, exports fetchGitHubData and refreshSnapshot); skillDictionary.js (data: SKILLS with name, category, case-insensitive `patterns`, case-sensitive `exact` for everyday words like React/REST); skillExtractor.js (pure, exports extractSkills(text)); jobService.js (posting CRUD, attaches extracted skills)
+- server/services/: dashboardService.js (pure, exports computeDashboard); evidenceService.js (pure, exports computeGitHubEvidence and snapshotStatus; skill names matched via normalisation + ALIASES map); githubService.js (all GitHub API access via built-in fetch, exports fetchGitHubData and refreshSnapshot); skillDictionary.js (data: SKILLS with name, category, case-insensitive `patterns`, case-sensitive `exact` for everyday words like React/REST); skillExtractor.js (pure, exports extractSkills(text) and matchSkillName(name), which maps a declared skill or GitHub language name to its dictionary skill case-insensitively); jobService.js (posting CRUD, attaches extracted skills); gapService.js (pure, exports computeJobGap)
 - client/src/api/client.js: the only axios instance; baseURL `/api`, attaches Bearer token from localStorage key `token`
 - client/src/context/AuthContext.jsx: session state (user, loading, login, register, logout)
 - client/src/components/: ProtectedRoute and the dashboard panels
@@ -44,7 +44,7 @@ Career intelligence platform for software engineers. Users declare a target role
 ## API (all under /api)
 - POST /auth/register, POST /auth/login (returns token), GET /auth/me (protected)
 - GET /career, PUT /career (protected): CareerProfile for req.user, created on first access via upsert
-- GET /career/dashboard (protected): computed summary (skills, milestones, readiness with breakdown) plus `githubEvidence`: status no-username | not-fetched | stale | ready; when ready, skills[] each evidenced (language, share %, repoCount) | no-evidence (category language, no match) | not-measurable (other categories), and undeclaredLanguages[] (share >= 1%). Evidence never feeds the readiness score.
+- GET /career/dashboard (protected): computed summary (skills, milestones, readiness with breakdown) plus `githubEvidence`: status no-username | not-fetched | stale | ready; when ready, skills[] each evidenced (language, share %, repoCount) | no-evidence (category language, no match) | not-measurable (other categories), and undeclaredLanguages[] (share >= 1%). Also `jobGap`: status no-postings (with totalPostings 0) | ready, with totalPostings, counts{missing, weak, covered}, skills[] (each dictionary skill found in any posting: postings, demandPercent, status missing | weak (level <= 2) | covered, level, declaredAs, github evidenced | none | not-measurable | unavailable), sorted by demand then gap severity; unrequestedSkills[] (recognised declared skills no posting mentions) and unrecognisedSkills[] (declared skills not in the dictionary). Evidence and jobGap never feed the readiness score.
 - GET /github (protected): cached snapshot plus `stale` flag; never calls GitHub. Returns { username, stale, snapshot }.
 - POST /github/refresh (protected): fetches for the profile's githubUsername (not the request body) and replaces the snapshot. 400 if no username, 404 unknown user, 429 rate limited, 502 other GitHub failures.
 - GET /jobs (protected): user's postings, newest first, each with `skills` extracted on read. POST /jobs { title, company, text } returns 201 (max 50 per user). DELETE /jobs/:id returns 204, or 404 if missing, malformed or another user's.

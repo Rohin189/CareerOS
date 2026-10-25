@@ -35,16 +35,19 @@ function canonical(name) {
   return ALIASES[key] || key;
 }
 
-function computeGitHubEvidence(profile, snapshot) {
+// 'no-username' | 'not-fetched' | 'stale' | 'ready'
+function snapshotStatus(profile, snapshot) {
   var username = profile.githubUsername || '';
-  if (!username) {
-    return { status: 'no-username' };
-  }
-  if (!snapshot) {
-    return { status: 'not-fetched' };
-  }
-  if (snapshot.username.toLowerCase() !== username.toLowerCase()) {
-    return { status: 'stale' };
+  if (!username) return 'no-username';
+  if (!snapshot) return 'not-fetched';
+  if (snapshot.username.toLowerCase() !== username.toLowerCase()) return 'stale';
+  return 'ready';
+}
+
+function computeGitHubEvidence(profile, snapshot) {
+  var status = snapshotStatus(profile, snapshot);
+  if (status !== 'ready') {
+    return { status: status };
   }
 
   var languages = snapshot.languages || [];
@@ -87,4 +90,4 @@ function computeGitHubEvidence(profile, snapshot) {
   };
 }
 
-module.exports = { computeGitHubEvidence };
+module.exports = { computeGitHubEvidence, snapshotStatus };

@@ -1,7 +1,9 @@
 ﻿const CareerProfile = require('../models/CareerProfile');
 const GitHubSnapshot = require('../models/GitHubSnapshot');
+const JobPosting = require('../models/JobPosting');
 const { computeDashboard } = require('../services/dashboardService');
 const { computeGitHubEvidence } = require('../services/evidenceService');
+const { computeJobGap } = require('../services/gapService');
 
 // GET /api/career/dashboard - derived summary of the user's career profile
 const getDashboard = async (req, res) => {
@@ -12,10 +14,12 @@ const getDashboard = async (req, res) => {
       { new: true, upsert: true }
     ).lean();
     const snapshot = await GitHubSnapshot.findOne({ user: req.user._id }).lean();
+    const postings = await JobPosting.find({ user: req.user._id }).select('text').lean();
 
-    // Evidence sits alongside the summary; it does not feed the readiness score
+    // Evidence and job gap sit alongside the summary; neither feeds the readiness score
     const summary = computeDashboard(profile);
     summary.githubEvidence = computeGitHubEvidence(profile, snapshot);
+    summary.jobGap = computeJobGap(profile, postings, snapshot);
 
     res.status(200).json(summary);
   } catch (err) {

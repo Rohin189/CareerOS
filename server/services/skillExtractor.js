@@ -25,6 +25,24 @@ var MATCHERS = SKILLS.map(function (s) {
   };
 });
 
+function normaliseName(name) {
+  return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+// Every spelling of every skill, case-insensitive: a bare skill name has no sentence around it,
+// so "react" can safely mean React here even though job text requires "React"
+var NAME_INDEX = {};
+SKILLS.forEach(function (s) {
+  [s.name].concat(s.patterns || [], s.exact || []).forEach(function (term) {
+    NAME_INDEX[normaliseName(term)] = { name: s.name, category: s.category };
+  });
+});
+
+// Maps a declared skill or GitHub language name to its dictionary skill, or null
+function matchSkillName(name) {
+  return NAME_INDEX[normaliseName(name)] || null;
+}
+
 // Returns the dictionary skills mentioned in text, in dictionary order
 function extractSkills(text) {
   var source = String(text || '');
@@ -35,4 +53,4 @@ function extractSkills(text) {
     .map(function (m) { return { name: m.name, category: m.category }; });
 }
 
-module.exports = { extractSkills };
+module.exports = { extractSkills, matchSkillName };

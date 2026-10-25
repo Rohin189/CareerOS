@@ -44,7 +44,7 @@ var SKILLS = [
 
   // Tools, platforms, databases
   { name: 'Git', category: 'tool', patterns: ['git'] },
-  { name: 'Docker', category: 'tool', patterns: ['docker'] },
+  { name: 'Docker', category: 'tool', patterns: ['docker', 'dockerfile'] },
   { name: 'Kubernetes', category: 'tool', patterns: ['kubernetes', 'k8s'] },
   { name: 'AWS', category: 'tool', patterns: ['aws', 'amazon web services'] },
   { name: 'Azure', category: 'tool', patterns: ['azure'] },
