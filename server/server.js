@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const careerRoutes = require('./routes/careerRoutes');
 const githubRoutes = require('./routes/githubRoutes');
+const jobRoutes = require('./routes/jobRoutes');
 
 connectDB();
 
@@ -21,6 +22,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/career', careerRoutes);
 app.use('/api/github', githubRoutes);
+app.use('/api/jobs', jobRoutes);
 
 app.listen(PORT, () => {
   console.log('Server running on http://localhost:' + PORT);
